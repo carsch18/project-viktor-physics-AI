@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Viktor - Physics Explorer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 350px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 2px solid #4a90e2;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #4a90e2;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        .search-section {
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #4a90e2;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #66b3ff;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
+        }
+
+        .search-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(45deg, #4a90e2, #357abd);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
+        }
+
+        .results-section {
+            flex: 1;
+        }
+
+        .formula-item {
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #4a90e2;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .formula-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .formula-title {
+            font-weight: 600;
+            color: #66b3ff;
+            margin-bottom: 5px;
+        }
+
+        .formula-equation {
+            font-family: 'Courier New', monospace;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .formula-domain {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        .visualization {
+            flex: 1;
+            position: relative;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .viz-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .control-btn {
+            display: block;
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #4a90e2;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .status-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        .loading {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #4a90e2;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="header">
+                <h1>Project Viktor</h1>
+                <p>Physics AI Explorer</p>
+            </div>
+
+            <div class="search-section">
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Search physics formulas..." id="searchInput">
+                </div>
+                <button class="search-btn" onclick="searchFormulas()">Explore Physics</button>
+            </div>
+
+            <div class="results-section" id="resultsSection">
+                <div class="formula-item" onclick="selectFormula('newton_second')" style="border-left-color: #4a90e2;">
+                    <div class="formula-title">Newton's Second Law</div>
+                    <div class="formula-equation">F = ma</div>
+                    <div class="formula-domain">Classical Mechanics</div>
+                </div>
+                
+                <div class="formula-item" onclick="selectFormula('kinetic_energy')" style="border-left-color: #5ba0f2;">
+                    <div class="formula-title">Kinetic Energy</div>
+                    <div class="formula-equation">KE = ½mv²</div>
+                    <div class="formula-domain">Classical Mechanics</div>
+                </div>
+                
+                <div class="formula-item" onclick="selectFormula('energy_mass')" style="border-left-color: #e74c3c;">
+                    <div class="formula-title">Mass-Energy Equivalence</div>
+                    <div class="formula-equation">E = mc²</div>
+                    <div class="formula-domain">Relativity</div>
+                </div>
+                
+                <div class="formula-item" onclick="selectFormula('schrodinger')" style="border-left-color: #9b59b6;">
+                    <div class="formula-title">Schrödinger Equation</div>
+                    <div class="formula-equation">iℏ ∂ψ/∂t = Ĥψ</div>
+                    <div class="formula-domain">Quantum Mechanics</div>
+                </div>
+                
+                <div class="formula-item" onclick="selectFormula('uncertainty')" style="border-left-color: #ab69c6;">
+                    <div class="formula-title">Uncertainty Principle</div>
+                    <div class="formula-equation">ΔxΔp ≥ ℏ/2</div>
+                    <div class="formula-domain">Quantum Mechanics</div>
+                </div>
+                
+                <div class="formula-item" onclick="selectFormula('coulomb_law')" style="border-left-color: #f39c12;">
+                    <div class="formula-title">Coulomb's Law</div>
+                    <div class="formula-equation">F = kq₁q₂/r²</div>
+                    <div class="formula-domain">Electromagnetism</div>
+                </div>
+                
+                <div class="formula-item" onclick="selectFormula('ideal_gas')" style="border-left-color: #2ecc71;">
+                    <div class="formula-title">Ideal Gas Law</div>
+                    <div class="formula-equation">PV = nRT</div>
+                    <div class="formula-domain">Thermodynamics</div>
+                </div>
+                
+                <div class="formula-item" onclick="selectFormula('wave_equation')" style="border-left-color: #e67e22;">
+                    <div class="formula-title">Wave Equation</div>
+                    <div class="formula-equation">∂²ψ/∂t² = c²∇²ψ</div>
+                    <div class="formula-domain">Wave Mechanics</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="visualization">
+            <div class="viz-controls">
+                <button class="control-btn" onclick="resetView()">Reset View</button>
+                <button class="control-btn" onclick="toggleConnections()">Toggle Links</button>
+                <button class="control-btn" onclick="changeColorMode()">Color Mode</button>
+            </div>
+
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <div>Analyzing physics relationships...</div>
+            </div>
+
+            <div id="threejs-container"></div>
+
+            <div class="status-bar">
+                <span id="statusText">Ready - Click formulas to explore relationships</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables for Three.js
+        let scene, camera, renderer, controls;
+        let formulaNodes = [];
+        let connectionLines = [];
+        let selectedFormula = null;
+        let raycaster, mouse;
+        let animationId;
+
+        // Initialize the 3D visualization
+        function initVisualization() {
+            const container = document.getElementById('threejs-container');
+            
+            if (!container) {
+                console.error('Container not found!');
+                return;
+            }
+            
+            console.log('Initializing 3D scene...');
+            
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0a1a);
+            
+            // Camera setup
+            const width = container.clientWidth || 800;
+            const height = container.clientHeight || 600;
+            camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            camera.position.set(0, 0, 50);
+            
+            // Renderer setup
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(width, height);
+            renderer.setClearColor(0x0a0a1a);
+            container.appendChild(renderer.domElement);
+            
+            console.log('Renderer created, size:', width, 'x', height);
+            
+            // Controls
+            if (THREE.OrbitControls) {
+                controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.05;
+                controls.autoRotate = true;
+                controls.autoRotateSpeed = 0.5;
+                console.log('OrbitControls initialized');
+            } else {
+                console.warn('OrbitControls not available');
+            }
+            
+            // Mouse interaction setup
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+            
+            // Add lighting for better visuals
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(50, 50, 50);
+            scene.add(directionalLight);
+            
+            // Create initial formula nodes
+            createFormulaNodes();
+            
+            console.log('Created', formulaNodes.length, 'formula nodes');
+            
+            // Start render loop
+            animate();
+            
+            // Test - add a simple cube to verify rendering works
+            const testGeometry = new THREE.BoxGeometry(5, 5, 5);
+            const testMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+            const testCube = new THREE.Mesh(testGeometry, testMaterial);
+            testCube.position.set(0, 0, 0);
+            scene.add(testCube);
+            console.log('Added test cube');
+            
+            // Event listeners
+            window.addEventListener('resize', onWindowResize);
+            container.addEventListener('click', onMouseClick);
+            container.addEventListener('mousemove', onMouseMove);
+        }
+
+        function createFormulaNodes() {
+            // Hardcoded "embedding-like" positions that look realistic
+            const formulas = [
+                // Classical Mechanics cluster
+                { id: 'newton_second', name: 'F=ma', position: [0, 0, 0], color: 0x4a90e2, domain: 'Classical' },
+                { id: 'kinetic_energy', name: 'KE=½mv²', position: [5, 3, -2], color: 0x5ba0f2, domain: 'Classical' },
+                { id: 'potential_energy', name: 'PE=mgh', position: [-3, 4, 1], color: 0x6bb0ff, domain: 'Classical' },
+                
+                // Relativity cluster
+                { id: 'energy_mass', name: 'E=mc²', position: [25, 8, -3], color: 0xe74c3c, domain: 'Relativity' },
+                { id: 'lorentz_factor', name: 'γ=1/√(1-v²/c²)', position: [22, 12, -6], color: 0xf85c5c, domain: 'Relativity' },
+                
+                // Quantum cluster  
+                { id: 'schrodinger', name: 'iℏ∂ψ/∂t=Ĥψ', position: [-20, 15, 8], color: 0x9b59b6, domain: 'Quantum' },
+                { id: 'uncertainty', name: 'ΔxΔp≥ℏ/2', position: [-18, 18, 12], color: 0xab69c6, domain: 'Quantum' },
+                { id: 'planck_energy', name: 'E=hf', position: [-22, 12, 6], color: 0x8b49a6, domain: 'Quantum' },
+                
+                // Electromagnetism cluster
+                { id: 'coulomb_law', name: 'F=kq₁q₂/r²', position: [8, -18, 4], color: 0xf39c12, domain: 'EM' },
+                { id: 'gauss_law', name: '∇·E=ρ/ε₀', position: [12, -15, 7], color: 0xffac32, domain: 'EM' },
+                { id: 'magnetic_force', name: 'F=q(v×B)', position: [6, -21, 2], color: 0xe38c02, domain: 'EM' },
+                
+                // Thermodynamics cluster
+                { id: 'ideal_gas', name: 'PV=nRT', position: [-8, -12, -8], color: 0x2ecc71, domain: 'Thermo' },
+                { id: 'entropy', name: 'S=k ln Ω', position: [-12, -8, -10], color: 0x3edc81, domain: 'Thermo' },
+                
+                // Wave mechanics
+                { id: 'wave_equation', name: '∂²ψ/∂t²=c²∇²ψ', position: [15, 0, 15], color: 0xe67e22, domain: 'Waves' },
+                { id: 'doppler_effect', name: "f'=f(v±v₀)/(v±vₛ)", position: [18, -3, 18], color: 0xf68e32, domain: 'Waves' }
+            ];
+
+            formulas.forEach((formula, index) => {
+                // Create main sphere for formula
+                const geometry = new THREE.SphereGeometry(1.5, 32, 32);
+                const material = new THREE.MeshBasicMaterial({ 
+                    color: formula.color,
+                    transparent: true,
+                    opacity: 0.9
+                });
+                
+                const sphere = new THREE.Mesh(geometry, material);
+                sphere.position.set(...formula.position);
+                sphere.userData = formula;
+                
+                // Add click interaction
+                sphere.callback = () => selectFormula(formula.id);
+                
+                scene.add(sphere);
+                formulaNodes.push(sphere);
+                
+                // Add outer glow ring
+                const glowGeometry = new THREE.RingGeometry(2, 2.5, 16);
+                const glowMaterial = new THREE.MeshBasicMaterial({
+                    color: formula.color,
+                    transparent: true,
+                    opacity: 0.3,
+                    side: THREE.DoubleSide
+                });
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                glow.position.copy(sphere.position);
+                glow.lookAt(camera.position);
+                scene.add(glow);
+                
+                // Add floating text label
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 256;
+                canvas.height = 64;
+                
+                context.fillStyle = '#ffffff';
+                context.font = '16px Arial';
+                context.textAlign = 'center';
+                context.fillText(formula.name, 128, 32);
+                context.fillStyle = formula.domain;
+                context.font = '12px Arial';
+                context.fillText(formula.domain, 128, 50);
+                
+                const texture = new THREE.CanvasTexture(canvas);
+                const labelMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true });
+                const label = new THREE.Sprite(labelMaterial);
+                label.position.set(formula.position[0], formula.position[1] + 3, formula.position[2]);
+                label.scale.set(8, 2, 1);
+                scene.add(label);
+            });
+            
+            // Add connecting lines between related formulas
+            createConnectionLines();
+        }
+        
+        function createConnectionLines() {
+            const connections = [
+                // Classical mechanics connections
+                ['newton_second', 'kinetic_energy'],
+                ['kinetic_energy', 'potential_energy'],
+                
+                // Relativity connections  
+                ['energy_mass', 'lorentz_factor'],
+                
+                // Quantum connections
+                ['schrodinger', 'uncertainty'],
+                ['schrodinger', 'planck_energy'],
+                
+                // EM connections
+                ['coulomb_law', 'gauss_law'],
+                ['coulomb_law', 'magnetic_force'],
+                
+                // Thermo connections
+                ['ideal_gas', 'entropy'],
+                
+                // Cross-domain connections
+                ['energy_mass', 'kinetic_energy'], // Energy connection
+                ['planck_energy', 'energy_mass'],  // Energy-mass connection
+                ['wave_equation', 'schrodinger']   // Wave connection
+            ];
+            
+            connections.forEach(([id1, id2]) => {
+                const node1 = formulaNodes.find(n => n.userData.id === id1);
+                const node2 = formulaNodes.find(n => n.userData.id === id2);
+                
+                if (node1 && node2) {
+                    const geometry = new THREE.BufferGeometry().setFromPoints([
+                        node1.position,
+                        node2.position
+                    ]);
+                    
+                    const material = new THREE.LineBasicMaterial({
+                        color: 0x444444,
+                        transparent: true,
+                        opacity: 0.3
+                    });
+                    
+                    const line = new THREE.Line(geometry, material);
+                    scene.add(line);
+                    connectionLines.push(line);
+                }
+            });
+        }
+
+        function animate() {
+            animationId = requestAnimationFrame(animate);
+            
+            // Rotate formula nodes slightly
+            formulaNodes.forEach((node, index) => {
+                node.rotation.y += 0.005 * (index % 3 + 1);
+                node.rotation.x += 0.003 * (index % 2 + 1);
+                
+                // Add floating motion
+                const time = Date.now() * 0.001;
+                node.position.y += Math.sin(time + index) * 0.02;
+            });
+            
+            if (controls) controls.update();
+            renderer.render(scene, camera);
+        }
+        
+        function onMouseClick(event) {
+            const container = document.getElementById('threejs-container');
+            const rect = container.getBoundingClientRect();
+            
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(formulaNodes);
+            
+            if (intersects.length > 0) {
+                const clickedFormula = intersects[0].object.userData;
+                selectFormula(clickedFormula.id);
+                
+                // Add click animation
+                const sphere = intersects[0].object;
+                const originalScale = sphere.scale.clone();
+                sphere.scale.multiplyScalar(1.3);
+                
+                setTimeout(() => {
+                    sphere.scale.copy(originalScale);
+                }, 200);
+            }
+        }
+        
+        function onMouseMove(event) {
+            const container = document.getElementById('threejs-container');
+            const rect = container.getBoundingClientRect();
+            
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(formulaNodes);
+            
+            // Change cursor and highlight on hover
+            if (intersects.length > 0) {
+                document.body.style.cursor = 'pointer';
+                
+                // Highlight hovered formula
+                formulaNodes.forEach(node => {
+                    if (node === intersects[0].object) {
+                        node.material.opacity = 1.0;
+                        node.scale.setScalar(1.1);
+                    } else {
+                        node.material.opacity = 0.7;
+                        node.scale.setScalar(1.0);
+                    }
+                });
+            } else {
+                document.body.style.cursor = 'default';
+                formulaNodes.forEach(node => {
+                    node.material.opacity = 0.9;
+                    node.scale.setScalar(1.0);
+                });
+            }
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('threejs-container');
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        // Search functionality
+        function searchFormulas() {
+            const query = document.getElementById('searchInput').value;
+            const loading = document.getElementById('loadingIndicator');
+            const status = document.getElementById('statusText');
+            
+            if (!query.trim()) return;
+            
+            loading.style.display = 'block';
+            status.textContent = `Searching for: "${query}"`;
+            
+            // Simulate search delay
+            setTimeout(() => {
+                loading.style.display = 'none';
+                status.textContent = `Found ${Math.floor(Math.random() * 20) + 5} related formulas`;
+                
+                // Here you would normally call your backend API
+                console.log('Searching for:', query);
+            }, 1500);
+        }
+
+        function selectFormula(formulaId) {
+            const status = document.getElementById('statusText');
+            status.textContent = `Selected: ${formulaId} - Analyzing relationships...`;
+            
+            // Highlight selected formula in 3D view
+            formulaNodes.forEach(node => {
+                if (node.userData.id === formulaId) {
+                    node.material.opacity = 1.0;
+                    selectedFormula = node;
+                } else {
+                    node.material.opacity = 0.6;
+                }
+            });
+            
+            // Here you would call your AI explanation API
+            setTimeout(() => {
+                status.textContent = `${formulaId} - Ready for AI analysis`;
+            }, 1000);
+        }
+
+        // Control functions
+        function resetView() {
+            camera.position.set(0, 0, 50);
+            controls.reset();
+        }
+
+        function toggleConnections() {
+            connectionLines.forEach(line => {
+                line.visible = !line.visible;
+            });
+            
+            const status = document.getElementById('statusText');
+            const visible = connectionLines.length > 0 ? connectionLines[0].visible : false;
+            status.textContent = `Connections ${visible ? 'shown' : 'hidden'}`;
+        }
+
+        function changeColorMode() {
+            const colorModes = [
+                // Original colors
+                { classical: 0x4a90e2, relativity: 0xe74c3c, quantum: 0x9b59b6, em: 0xf39c12, thermo: 0x2ecc71, waves: 0xe67e22 },
+                // Neon mode
+                { classical: 0x00ff88, relativity: 0xff6b6b, quantum: 0x4facfe, em: 0xffd93d, thermo: 0x6bcf7f, waves: 0xff8a65 },
+                // Dark mode
+                { classical: 0x2c3e50, relativity: 0x8e44ad, quantum: 0x34495e, em: 0xe67e22, thermo: 0x16a085, waves: 0xc0392b }
+            ];
+            
+            const currentMode = (window.colorModeIndex || 0) + 1;
+            window.colorModeIndex = currentMode % colorModes.length;
+            
+            const colors = colorModes[window.colorModeIndex];
+            
+            formulaNodes.forEach(node => {
+                const domain = node.userData.domain.toLowerCase();
+                if (domain.includes('classical')) node.material.color.setHex(colors.classical);
+                else if (domain.includes('relativity')) node.material.color.setHex(colors.relativity);
+                else if (domain.includes('quantum')) node.material.color.setHex(colors.quantum);
+                else if (domain.includes('em')) node.material.color.setHex(colors.em);
+                else if (domain.includes('thermo')) node.material.color.setHex(colors.thermo);
+                else if (domain.includes('waves')) node.material.color.setHex(colors.waves);
+            });
+            
+            const status = document.getElementById('statusText');
+            const modeNames = ['Original', 'Neon', 'Dark'];
+            status.textContent = `Color mode: ${modeNames[window.colorModeIndex]}`;
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', () => {
+            console.log('Page loaded, initializing...');
+            console.log('THREE.js available:', typeof THREE !== 'undefined');
+            console.log('OrbitControls available:', typeof THREE !== 'undefined' && THREE.OrbitControls);
+            setTimeout(initVisualization, 100); // Small delay to ensure DOM is ready
+        });
+
+        // Fallback initialization if load event doesn't fire
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM ready, checking if already initialized...');
+            setTimeout(() => {
+                if (!scene) {
+                    console.log('Scene not initialized, trying fallback...');
+                    initVisualization();
+                }
+            }, 500);
+        });
+
+        // Handle search on Enter key
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchFormulas();
+            }
+        });
+    </script>
+</body>
+</html>

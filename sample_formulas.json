@@ -1,0 +1,235 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "total_formulas": 50,
+    "domains": 8,
+    "description": "Curated sample of physics formulas for Project Viktor demo"
+  },
+  "formulas": [
+    {
+      "id": "newton_first",
+      "name": "Newton's First Law",
+      "equation": "F_net = 0 ⟹ v = constant",
+      "latex": "F_{\\text{net}} = 0 \\Rightarrow v = \\text{constant}",
+      "domain": "Classical Mechanics",
+      "subdomain": "Dynamics",
+      "description": "An object at rest stays at rest, an object in motion stays in motion",
+      "variables": {
+        "F_net": "Net force (N)",
+        "v": "Velocity (m/s)"
+      },
+      "applications": ["Inertial reference frames", "Equilibrium analysis"],
+      "difficulty": "beginner",
+      "tags": ["fundamental", "motion", "inertia"]
+    },
+    {
+      "id": "newton_second", 
+      "name": "Newton's Second Law",
+      "equation": "F = ma",
+      "latex": "F = ma",
+      "domain": "Classical Mechanics",
+      "subdomain": "Dynamics", 
+      "description": "Force equals mass times acceleration",
+      "variables": {
+        "F": "Force (N)",
+        "m": "Mass (kg)",
+        "a": "Acceleration (m/s²)"
+      },
+      "applications": ["Motion analysis", "Engineering design", "Robotics"],
+      "difficulty": "beginner",
+      "tags": ["fundamental", "force", "acceleration"]
+    },
+    {
+      "id": "newton_third",
+      "name": "Newton's Third Law", 
+      "equation": "F₁₂ = -F₂₁",
+      "latex": "F_{12} = -F_{21}",
+      "domain": "Classical Mechanics",
+      "subdomain": "Dynamics",
+      "description": "For every action, there is an equal and opposite reaction",
+      "variables": {
+        "F₁₂": "Force of object 1 on object 2 (N)",
+        "F₂₁": "Force of object 2 on object 1 (N)"
+      },
+      "applications": ["Rocket propulsion", "Walking", "Collision analysis"],
+      "difficulty": "beginner", 
+      "tags": ["fundamental", "action-reaction", "forces"]
+    },
+    {
+      "id": "kinetic_energy",
+      "name": "Kinetic Energy",
+      "equation": "KE = ½mv²",
+      "latex": "KE = \\frac{1}{2}mv^2",
+      "domain": "Classical Mechanics",
+      "subdomain": "Energy",
+      "description": "Energy of motion for a moving object",
+      "variables": {
+        "KE": "Kinetic energy (J)",
+        "m": "Mass (kg)",
+        "v": "Velocity (m/s)"
+      },
+      "applications": ["Vehicle safety", "Sports physics", "Energy calculations"],
+      "difficulty": "beginner",
+      "tags": ["energy", "motion", "fundamental"]
+    },
+    {
+      "id": "potential_energy",
+      "name": "Gravitational Potential Energy",
+      "equation": "PE = mgh", 
+      "latex": "PE = mgh",
+      "domain": "Classical Mechanics",
+      "subdomain": "Energy",
+      "description": "Energy stored due to position in gravitational field",
+      "variables": {
+        "PE": "Potential energy (J)",
+        "m": "Mass (kg)",
+        "g": "Gravitational acceleration (m/s²)",
+        "h": "Height (m)"
+      },
+      "applications": ["Hydroelectric power", "Roller coasters", "Satellite orbits"],
+      "difficulty": "beginner",
+      "tags": ["energy", "gravity", "position"]
+    },
+    {
+      "id": "energy_mass",
+      "name": "Mass-Energy Equivalence",
+      "equation": "E = mc²",
+      "latex": "E = mc^2", 
+      "domain": "Relativity",
+      "subdomain": "Special Relativity",
+      "description": "Energy and mass are interchangeable",
+      "variables": {
+        "E": "Energy (J)",
+        "m": "Mass (kg)", 
+        "c": "Speed of light (m/s)"
+      },
+      "applications": ["Nuclear physics", "Particle physics", "Stellar processes"],
+      "difficulty": "intermediate",
+      "tags": ["relativity", "energy", "mass", "fundamental"]
+    },
+    {
+      "id": "lorentz_factor",
+      "name": "Lorentz Factor",
+      "equation": "γ = 1/√(1 - v²/c²)",
+      "latex": "\\gamma = \\frac{1}{\\sqrt{1 - \\frac{v^2}{c^2}}}",
+      "domain": "Relativity", 
+      "subdomain": "Special Relativity",
+      "description": "Factor describing relativistic effects",
+      "variables": {
+        "γ": "Lorentz factor (dimensionless)",
+        "v": "Velocity (m/s)",
+        "c": "Speed of light (m/s)"
+      },
+      "applications": ["Time dilation", "Length contraction", "Particle accelerators"],
+      "difficulty": "intermediate",
+      "tags": ["relativity", "time", "space"]
+    },
+    {
+      "id": "schrodinger_time",
+      "name": "Time-Dependent Schrödinger Equation",
+      "equation": "iℏ ∂ψ/∂t = Ĥψ",
+      "latex": "i\\hbar \\frac{\\partial \\psi}{\\partial t} = \\hat{H}\\psi",
+      "domain": "Quantum Mechanics",
+      "subdomain": "Wave Mechanics",
+      "description": "Fundamental equation governing quantum systems",
+      "variables": {
+        "ψ": "Wave function",
+        "t": "Time (s)",
+        "Ĥ": "Hamiltonian operator",
+        "ℏ": "Reduced Planck constant (J·s)"
+      },
+      "applications": ["Quantum systems", "Atomic physics", "Molecular dynamics"],
+      "difficulty": "advanced",
+      "tags": ["quantum", "wave function", "fundamental"]
+    },
+    {
+      "id": "uncertainty_principle",
+      "name": "Heisenberg Uncertainty Principle", 
+      "equation": "Δx Δp ≥ ℏ/2",
+      "latex": "\\Delta x \\Delta p \\geq \\frac{\\hbar}{2}",
+      "domain": "Quantum Mechanics",
+      "subdomain": "Measurement",
+      "description": "Fundamental limit on simultaneous measurement precision",
+      "variables": {
+        "Δx": "Position uncertainty (m)",
+        "Δp": "Momentum uncertainty (kg·m/s)",
+        "ℏ": "Reduced Planck constant (J·s)"
+      },
+      "applications": ["Quantum measurement", "Microscopy limits", "Quantum computing"],
+      "difficulty": "advanced", 
+      "tags": ["quantum", "uncertainty", "measurement"]
+    },
+    {
+      "id": "coulomb_law",
+      "name": "Coulomb's Law",
+      "equation": "F = k q₁q₂/r²",
+      "latex": "F = k \\frac{q_1 q_2}{r^2}",
+      "domain": "Electromagnetism",
+      "subdomain": "Electrostatics",
+      "description": "Force between electric charges",
+      "variables": {
+        "F": "Electric force (N)",
+        "k": "Coulomb constant (N·m²/C²)",
+        "q₁": "First charge (C)",
+        "q₂": "Second charge (C)", 
+        "r": "Distance between charges (m)"
+      },
+      "applications": ["Atomic structure", "Electronic devices", "Lightning"],
+      "difficulty": "intermediate",
+      "tags": ["electric", "force", "charge"]
+    },
+    {
+      "id": "gauss_law",
+      "name": "Gauss's Law",
+      "equation": "∇ · E = ρ/ε₀",
+      "latex": "\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}",
+      "domain": "Electromagnetism",
+      "subdomain": "Electric Fields",
+      "description": "Relates electric field to charge distribution",
+      "variables": {
+        "E": "Electric field (V/m)",
+        "ρ": "Charge density (C/m³)",
+        "ε₀": "Permittivity of free space (F/m)"
+      },
+      "applications": ["Field calculations", "Capacitor design", "Electromagnetic theory"],
+      "difficulty": "advanced",
+      "tags": ["electric field", "charge", "maxwell"]
+    },
+    {
+      "id": "ideal_gas_law",
+      "name": "Ideal Gas Law",
+      "equation": "PV = nRT",
+      "latex": "PV = nRT",
+      "domain": "Thermodynamics",
+      "subdomain": "Gas Laws",
+      "description": "Relationship between pressure, volume, and temperature for ideal gases",
+      "variables": {
+        "P": "Pressure (Pa)",
+        "V": "Volume (m³)",
+        "n": "Amount of substance (mol)",
+        "R": "Gas constant (J/(mol·K))",
+        "T": "Temperature (K)"
+      },
+      "applications": ["Engine design", "Weather prediction", "Chemical processes"],
+      "difficulty": "beginner",
+      "tags": ["gas", "pressure", "temperature"]
+    },
+    {
+      "id": "entropy_boltzmann",
+      "name": "Boltzmann Entropy Formula",
+      "equation": "S = k ln Ω",
+      "latex": "S = k \\ln \\Omega",
+      "domain": "Thermodynamics",
+      "subdomain": "Statistical Mechanics",
+      "description": "Entropy in terms of microstates",
+      "variables": {
+        "S": "Entropy (J/K)",
+        "k": "Boltzmann constant (J/K)",
+        "Ω": "Number of microstates"
+      },
+      "applications": ["Information theory", "Black hole physics", "Statistical analysis"],
+      "difficulty": "advanced",
+      "tags": ["entropy", "statistics", "information"]
+    }
+  ]
+}

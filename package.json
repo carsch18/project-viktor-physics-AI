@@ -1,0 +1,40 @@
+{
+  "name": "project-viktor",
+  "version": "1.0.0",
+  "description": "Physics AI Explorer - Intelligent formula visualization and analysis",
+  "main": "demo_backend.py",
+  "scripts": {
+    "start": "./start_demo.sh",
+    "dev": "python demo_backend.py",
+    "install-deps": "pip install -r requirements.txt"
+  },
+  "keywords": [
+    "physics",
+    "ai",
+    "visualization", 
+    "education",
+    "semantic-search",
+    "3d-graphics"
+  ],
+  "author": "Viktor Physics Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "python": ">=3.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/project-viktor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/project-viktor/issues"
+  },
+  "homepage": "https://github.com/yourusername/project-viktor#readme"
+}
