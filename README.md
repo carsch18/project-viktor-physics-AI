@@ -18,11 +18,16 @@
 
 ## 🎥 Interactive Research Demo
 
-<a href="video/P1.mp4">
-  <img src="https://img.shields.io/badge/🎬_Watch_Research_Demo-4285F4?style=for-the-badge&logoColor=white" alt="Research Demo">
+<a href="https://youtu.be/B06tx9-alpY">
+  <img src="https://img.youtube.com/vi/B06tx9-alpY/maxresdefault.jpg" 
+       alt="Project Viktor - Physics AI Explorer Demo" 
+       width="70%" 
+       style="border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.3);">
 </a>
 
-**📹 [Direct Video Link: Project Viktor Demo](video/P1.mp4)**
+### 🎮 **[🎬 Watch Full Demo on YouTube](https://youtu.be/B06tx9-alpY)**
+
+*Click the thumbnail above or the link to see the complete demonstration*
 
 **🧠 AI-Powered Physics Exploration • 🌌 3D Semantic Visualization • ⚡ Real-time Analysis**
 
