@@ -1,5 +1,5 @@
 # PROJECT VIKTOR:  Physics Intelligence System
-# An approach to build a NeuroSymbolic AI that unlike LLMs can actually understand and 
+# An approach to build a NeuroSymbolic AI that unlike LLMs can actually understand 
 
 # NOTE :- THIS IDEA IS BEING APPLIED FOR AN US PATENT HENCE CANNOT DISCLOSE FULL SOURCE CODE  , THE VIDEO ATTACHED IS TRUE TO ITS REPRESENTATION 
 
